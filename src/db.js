@@ -1,23 +1,21 @@
 'use strict';
 const Database = require('better-sqlite3');
 const path     = require('path');
+const fs       = require('fs');
 const bcrypt   = require('bcryptjs');
 
-const DB_PATH  = path.join(__dirname, '..', 'db', 'nyalain.db');
+const DB_DIR   = path.join(__dirname, '..', 'db');
+const DB_PATH  = path.join(DB_DIR, 'nyalain.db');
+
+// Auto-buat folder db/ kalau belum ada (fix Railway deploy)
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+  console.log('📁 Folder db/ dibuat otomatis');
+}
 
 let db;
 function getDb() {
   if (!db) {
-    import Database from "better-sqlite3";
-import fs from "fs";
-import path from "path";
-
-const dbDir = path.join(process.cwd(), "data");
-if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
-
-const db = new Database(path.join(dbDir, "database.db"));
-
-export default db;
     db = new Database(DB_PATH);
     db.pragma('journal_mode = WAL');
     db.pragma('foreign_keys = ON');
