@@ -8,6 +8,16 @@ const DB_PATH  = path.join(__dirname, '..', 'db', 'nyalain.db');
 let db;
 function getDb() {
   if (!db) {
+    import Database from "better-sqlite3";
+import fs from "fs";
+import path from "path";
+
+const dbDir = path.join(process.cwd(), "data");
+if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+
+const db = new Database(path.join(dbDir, "database.db"));
+
+export default db;
     db = new Database(DB_PATH);
     db.pragma('journal_mode = WAL');
     db.pragma('foreign_keys = ON');
